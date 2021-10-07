@@ -1,3 +1,4 @@
 password.txt
 __pycache__/
 *.py[cod]
+nohup.out
