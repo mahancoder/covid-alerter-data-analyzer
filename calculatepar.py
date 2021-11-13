@@ -11,7 +11,8 @@ INDOOR_PAR_PER_POINT = 0.25
 HOUSE_PAR_PER_POINT = 0.3
 
 # OSM Postgre Database Connection
-osm_db_password = json.load("password.json")["osm"]
+with open("password.json", encoding="ascii") as file:
+    osm_db_password = json.load(file)["osm"]
 pgconn = psycopg2.connect(host="localhost", database="osm",
                           user="postgres", password=osm_db_password)
 
@@ -31,7 +32,7 @@ def calculate(session):
         location.HasChilds = haschilds
         session.commit()
 
-        # TODO Add calculation code
+        # TODO: Add calculation code
         session.commit()
 
 
@@ -41,18 +42,18 @@ def location_has_child(loc: Neighbourhood) -> bool:
 
     query = (
         # Select the number of smaller divisions that are inside our location
-        "SELECT COUNT(child.osm_id) FROM planet_osm_polygon AS childs"
-        "INNER JOIN planet_osm_polygon AS parent"
-        "ON ST_Within(child.way, parent.way)"
+        "SELECT COUNT(child.osm_id) FROM planet_osm_polygon AS child "
+        "INNER JOIN planet_osm_polygon AS parent "
+        "ON ST_Within(child.way, parent.way) "
         # Only childs which are administrative divisions (can be expanded for more tags)
-        "WHERE (child.place='neighbourhood' OR child.boundary='administrative')"
-        "AND"
-        "parent.osm_id = %s"
-        "AND"
+        "WHERE (child.place='neighbourhood' OR child.boundary='administrative') "
+        "AND "
+        "parent.osm_id = %s "
+        "AND "
         # Filter out the parent from the results
-        "child.osm_id!=b.osm_id"
-        "AND"
-        "child.way_area!=b.way_area"
+        "child.osm_id!=parent.osm_id "
+        "AND "
+        "child.way_area!=parent.way_area"
     )
 
     # Convert Area Id to PostGis OSM Id format

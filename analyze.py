@@ -14,7 +14,8 @@ def main():
     start_time = time.time()
 
     # Get the database password
-    db_password = json.load("password.json")["main"]
+    with open("password.json", encoding="ascii") as file:
+        db_password = json.load(file)["main"]
 
     # Connect to the database
     engine = sqlalchemy.create_engine(

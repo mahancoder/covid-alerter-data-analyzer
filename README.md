@@ -1,2 +1,2 @@
 # Covid Alerter Data Analyzer
-The data analyzer script for Covid Alerter Mobile App!
+The data analyzer script for The Covid Alerter Mobile App
