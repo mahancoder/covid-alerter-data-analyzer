@@ -1,4 +1,5 @@
-password.txt
+password.*
 __pycache__/
 *.py[cod]
 nohup.out
+*.old

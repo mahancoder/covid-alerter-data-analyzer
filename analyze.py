@@ -1,18 +1,34 @@
-import findstays, calculatepar, calculatescore, sqlalchemy, sqlalchemy.orm
-from sqlalchemy.orm import sessionmaker 
+"""Analyze the reports to generate scores for each neighbourhood"""
+
 import time
+import json
+import sqlalchemy
+from sqlalchemy.orm import sessionmaker
+import calculatepar
+
 
 def main():
-    t = time.time()
-    password = ""
-    for line in open("password.txt"):
-        password += line
-    engine = sqlalchemy.create_engine(f"mysql://root:{password}@localhost:3306/CovidAlerter")
-    Session = sessionmaker(bind=engine)
-    session = Session()
+    """The main function"""
+
+    # Get start time for benchmarking
+    start_time = time.time()
+
+    # Get the database password
+    db_password = json.load("password.json")["main"]
+
+    # Connect to the database
+    engine = sqlalchemy.create_engine(
+        f"mysql://root:{db_password}@localhost:3306/CovidAlerter")
+    session = sessionmaker(bind=engine)
+    session = session()
+
+    # Calculate the PAR
     calculatepar.calculate(session)
-    print("Time (ms): " + str((time.time() - t) * 1000))
+
+    # Get the execution time
+    print("Time (ms): " + str((time.time() - start_time) * 1000))
     input("Press any key to exit...")
+
 
 if __name__ == "__main__":
     main()
