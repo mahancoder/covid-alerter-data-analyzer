@@ -19,9 +19,10 @@ def main():
 
     # Connect to the database
     engine = sqlalchemy.create_engine(
-        f"mysql://root:{db_password}@localhost:3306/CovidAlerter")
-    session = sessionmaker(bind=engine)
-    session = session()
+        f"mysql://mahan:{db_password}@localhost:3306/CovidAlerter")
+
+    # Create a session
+    session: sqlalchemy.orm.session.Session = sessionmaker(bind=engine)()
 
     # Calculate the PAR
     calculatepar.calculate(session)
