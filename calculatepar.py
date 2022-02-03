@@ -1,8 +1,9 @@
 """Required functions to calculate the Person-Area Ratio for each of the Neighbourhoods"""
 import json
 import psycopg2
-from model import Neighbourhood
 from sqlalchemy.orm.session import Session
+from model import Neighbourhood
+
 
 # PAR ratio constants
 OUTDOOR_PAR_PER_POINT = 0.5
@@ -60,7 +61,7 @@ def get_outdoors(loc: Neighbourhood) -> tuple:
                     "("
                         "child.building IS NULL "
                         "AND "
-                        "child.boundary IS NULL " 
+                        "child.boundary IS NULL "
                     ") "
 
                     "AND "
