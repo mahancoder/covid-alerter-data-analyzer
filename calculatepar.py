@@ -49,7 +49,8 @@ def get_outdoors(loc: Neighbourhood) -> tuple:
             "WITH results AS ( "
 
                 # Select all the locations that are inside our neighbourhood
-                "SELECT child.osm_id as osm_id, child.way_area as way_area, child.way as way FROM planet_osm_polygon AS child "
+                "SELECT child.osm_id as osm_id, child.way_area as way_area, child.way as way "
+                "FROM planet_osm_polygon AS child "
                 "INNER JOIN planet_osm_polygon AS parent "
                 "ON ST_Within(child.way, parent.way) "
 
