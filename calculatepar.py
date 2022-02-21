@@ -134,7 +134,7 @@ def get_indoors(loc: Neighbourhood) -> tuple:
             "FROM all_buildings AS commercial "
             "WHERE commercial.osm_id NOT IN (SELECT houses.osm_id FROM houses) "
         ") "
-        
+
         "SELECT SUM(houses.way_area), SUM(commercials.way_area) FROM houses, commercials"
     )
 
