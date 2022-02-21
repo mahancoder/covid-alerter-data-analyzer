@@ -33,8 +33,7 @@ def calculate(session: Session):
         # Check if the location has any smaller administrative divisions
         location.HasChilds = check_location_childs(location, session)
         session.commit()
-
-        # TODO: Add calculation code
+        # Calculate the PAR for the location
         if location.IsBig is False:
             # Get all the places
             location.Ratio = calculate_par(location)
@@ -266,19 +265,24 @@ def get_outdoors(loc: Neighbourhood) -> float:
 
                         ")"
                     ")"
+
                     # Specify the neighbourhood id
                     "AND "
+
                     "parent.osm_id = %s "
 
                     "AND "
 
                     # Filter out the parent from the results
                     "child.osm_id!=parent.osm_id "
+
                     "AND "
+
                     "child.way_area!=parent.way_area"
                 ") "
 
-                # Filter out ways that are inside another way (eg. playground inside a sorrounding park)
+                # Filter out ways that are inside another way
+                # (eg. playground inside a sorrounding park)
 
                 # Store parents and childs in the temp table
                 "SELECT parent.osm_id AS parent_id, "
@@ -294,7 +298,8 @@ def get_outdoors(loc: Neighbourhood) -> float:
             ") "
 
             # Select parents that are not in the childs list (that are not childs of anything else)
-            "SELECT DISTINCT ON (parent_id) parent_area FROM duplicated_results WHERE parent_id NOT IN "
+            "SELECT DISTINCT ON (parent_id) parent_area FROM duplicated_results "
+            "WHERE parent_id NOT IN "
             "( "
                 "SELECT child_id FROM duplicated_results WHERE child_id IS NOT NULL"
             ") "
@@ -339,7 +344,8 @@ def check_location_childs(loc: Neighbourhood, db_session: sqlalchemy.orm.session
     if len(result) > 0:
         for row in result:
             child = Neighbourhood(Name=row[0], OSMId=str(row[1]),
-                                  IsRelation=str(row[1]).startswith('-'), LiveCount=0, IsBig=(row[2] is None))
+                                  IsRelation=str(row[1]).startswith('-'),
+                                  LiveCount=0, IsBig=(row[2] is None))
             child.HasChilds = check_location_childs(child, db_session)
             if child.IsBig is False:
                 child.Ratio = calculate_par(child)
