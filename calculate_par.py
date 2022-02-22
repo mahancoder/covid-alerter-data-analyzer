@@ -31,11 +31,11 @@ def calculate(session: Session):
 
     for location in locations:
         # Check if the location has any smaller administrative divisions
-        location.HasChilds = check_location_childs(location, session)
-        session.commit()
+#         location.HasChilds = check_location_childs(location, session)
+#         session.commit()
         # Calculate the PAR for the location
         if location.IsBig is False:
-            # Get all the places
+            # Calculate the PAR and store it in the database
             location.Ratio = calculate_par(location)
         session.commit()
 

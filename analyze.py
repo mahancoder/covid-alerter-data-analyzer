@@ -4,7 +4,7 @@ import time
 import json
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
-import calculatepar
+import calculate_par
 
 
 def main():
@@ -25,7 +25,7 @@ def main():
     session: sqlalchemy.orm.session.Session = sessionmaker(bind=engine)()
 
     # Calculate the PAR
-    calculatepar.calculate(session)
+    calculate_par.calculate(session)
 
     # Get the execution time
     print("Time (ms): " + str((time.time() - start_time) * 1000))
