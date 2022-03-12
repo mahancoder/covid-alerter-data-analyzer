@@ -32,6 +32,7 @@ def main():
 
     # Calculate the score
     calculate_scores.calculate(session)
+
     # Print the benchmarking time
     print(f"--- {time.time() - start_time} seconds ---")
 

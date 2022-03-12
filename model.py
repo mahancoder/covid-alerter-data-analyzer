@@ -15,11 +15,17 @@ class Report(Base):
     Id = sqlalchemy.Column(Integer, primary_key=True)
     Longitude = sqlalchemy.Column(Numeric)
     Latitude = sqlalchemy.Column(Numeric)
+
+    # The user who created the report
     UserId = sqlalchemy.Column(Integer, ForeignKey("Users.Id"))
     User = relationship("User", back_populates="Reports")
+
+    # The neighbourhood in which the report was sent
     NeighbourhoodId = sqlalchemy.Column(
         Integer, ForeignKey("Neighbourhoods.Id"))
     Neighbourhood = relationship("Neighbourhood", back_populates="Reports")
+
+    # The timestamp when the report was sent
     Timestamp = sqlalchemy.Column(DateTime)
 
 
@@ -27,14 +33,24 @@ class User(Base):
     """The users table model"""
     __tablename__ = "Users"
     Id = sqlalchemy.Column(Integer, primary_key=True)
-    LastLocationId = sqlalchemy.Column(Integer)
+
+    # The user settings
     Settings = sqlalchemy.Column(String)
+
+    # The user last interaction time (used to expire the tokens)
     LastInteraction = sqlalchemy.Column(DateTime)
+
+    # The user's Google Account Id
     GoogleId = sqlalchemy.Column(String)
+
     SessionId = sqlalchemy.Column(String)
+
+    # The user's last neighbourhood (used for live count)
     LastLocationId = sqlalchemy.Column(
         Integer, ForeignKey("Neighbourhoods.Id"))
     LastLocation = relationship("Neighbourhood", back_populates="Users")
+
+    # A list of user's reports
     Reports = relationship("Report", back_populates="User")
 
 
@@ -50,17 +66,32 @@ class Neighbourhood(Base):
     """The neighbourhoods table model"""
     __tablename__ = "Neighbourhoods"
     Id = sqlalchemy.Column(Integer, primary_key=True, autoincrement=True)
+
+    # The neighbourhood PAR
     Ratio = sqlalchemy.Column(Float)
+
+    # Whether the neighbourhood has child neighbourhoods
     HasChilds = sqlalchemy.Column(Boolean)
+
+    # The neighbourhood's live count
     LiveCount = sqlalchemy.Column(Integer)
+
     Name = sqlalchemy.Column(String)
     OSMId = sqlalchemy.Column(String)
+
+    # Whether the neighbourhood is a relation (OSM type)
     IsRelation = sqlalchemy.Column(Boolean)
+
+    # Whether the area is a neighbourhood or something big like province
     IsBig = sqlalchemy.Column(Boolean)
+
+    # Users which are currently inside the neighbourhood
     Users = relationship("User", back_populates="LastLocation")
+
+    # Reports which were sent in the neighbourhood
     Reports = relationship("Report", back_populates="Neighbourhood")
-    # Parents = relationship("Neighbourhood", back_populates="Childs",
-    #    secondary="ChildParents", foreign_keys=ChildParents.ParentsId)
+
+    # The child neighbourhoods
     Childs = relationship("Neighbourhood", backref="Parents",
                           secondary="ChildParents", primaryjoin=Id == ChildParents.ParentsId,
                           secondaryjoin=Id == ChildParents.ChildsId)

@@ -343,6 +343,9 @@ def check_location_childs(loc: Neighbourhood, db_session: sqlalchemy.orm.session
     # Run the query and return the result
     cur.execute(query, (osm_id, ))
     result = cur.fetchall()
+
+    # Result row format:
+    # (Name, OSMId, Place tag)
     if len(result) > 0:
         for row in result:
             child = Neighbourhood(Name=row[0], OSMId=str(row[1]),

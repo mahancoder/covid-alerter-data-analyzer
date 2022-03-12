@@ -16,7 +16,9 @@ def calculate(session: Session) -> tuple:
     """Find the stays"""
     query = (
         "SELECT results.NeighbourhoodId, "
+        # Round to 2 decimal points
         "ROUND ( "
+            # The number of stays multipled by the neighbourhood ratio
             "SUM(results.ReportCount) * neighbourhood.Ratio"
         ", 2) "
         "AS Score "
@@ -70,14 +72,15 @@ def calculate(session: Session) -> tuple:
                     "windowed_reports.NeighbourhoodId = windowed_reports.second_prev_neighbourhood"
                 ") "
         ") AS results "
+        # Join the neighbourhood to get the ratio
         "INNER JOIN CovidAlerter.Neighbourhoods AS neighbourhood "
         "ON results.NeighbourhoodId = neighbourhood.Id "
         "GROUP BY results.NeighbourhoodId"
         ";"
     )
     results = session.execute(query).fetchall()
-    # Now we have an array of this format:
-    # [NeighbourhoodId, Score]
+    # Result row format:
+    # (NeighbourhoodId, Score)
 
     # Create a table row for each neighbourhood
     logs = [ScoreLog(NeighbourhoodId=result[0], Score=result[1],
