@@ -5,6 +5,8 @@ import json
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 import calculate_par
+import calculate_scores
+from model import Base
 
 
 def main():
@@ -23,13 +25,15 @@ def main():
 
     # Create a session
     session: sqlalchemy.orm.session.Session = sessionmaker(bind=engine)()
+    Base.metadata.create_all(engine)
 
     # Calculate the PAR
     calculate_par.calculate(session)
 
-    # Get the execution time
-    print("Time (ms): " + str((time.time() - start_time) * 1000))
-    input("Press any key to exit...")
+    # Calculate the score
+    calculate_scores.calculate(session)
+    # Print the benchmarking time
+    print(f"--- {time.time() - start_time} seconds ---")
 
 
 if __name__ == "__main__":

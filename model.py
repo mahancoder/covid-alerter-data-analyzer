@@ -15,10 +15,12 @@ class Report(Base):
     Id = sqlalchemy.Column(Integer, primary_key=True)
     Longitude = sqlalchemy.Column(Numeric)
     Latitude = sqlalchemy.Column(Numeric)
-    UserId = sqlalchemy.Column(Integer)
+    UserId = sqlalchemy.Column(Integer, ForeignKey("Users.Id"))
+    User = relationship("User", back_populates="Reports")
     NeighbourhoodId = sqlalchemy.Column(
         Integer, ForeignKey("Neighbourhoods.Id"))
     Neighbourhood = relationship("Neighbourhood", back_populates="Reports")
+    Timestamp = sqlalchemy.Column(DateTime)
 
 
 class User(Base):
@@ -33,6 +35,7 @@ class User(Base):
     LastLocationId = sqlalchemy.Column(
         Integer, ForeignKey("Neighbourhoods.Id"))
     LastLocation = relationship("Neighbourhood", back_populates="Users")
+    Reports = relationship("Report", back_populates="User")
 
 
 class ChildParents(Base):
@@ -61,3 +64,11 @@ class Neighbourhood(Base):
     Childs = relationship("Neighbourhood", backref="Parents",
                           secondary="ChildParents", primaryjoin=Id == ChildParents.ParentsId,
                           secondaryjoin=Id == ChildParents.ChildsId)
+class ScoreLog(Base):
+    """The score log table model"""
+    __tablename__ = "ScoreLog"
+    Id = sqlalchemy.Column(Integer, primary_key=True, autoincrement=True)
+    NeighbourhoodId = sqlalchemy.Column(Integer, ForeignKey("Neighbourhoods.Id"))
+    Neighbourhood = relationship("Neighbourhood", backref="ScoreLogs")
+    Score = sqlalchemy.Column(Float)
+    Date = sqlalchemy.Column(DateTime)

@@ -1,9 +1,10 @@
 """Required functions to calculate the Person-Area Ratio for each of the Neighbourhoods"""
 import json
+import math
 import psycopg2
 import sqlalchemy
 from sqlalchemy.orm.session import Session
-from model import Base, Neighbourhood
+from model import Neighbourhood
 
 
 # PAR ratio constants
@@ -25,7 +26,6 @@ cur = pgconn.cursor()
 
 def calculate(session: Session):
     """Calculate the Person-Area Ratio for each of the Neighbourhoods"""
-    Base.metadata.create_all(bind=session.get_bind())
     # Get All stored neighbourhoods from the database
     locations = session.query(Neighbourhood)
 
@@ -41,9 +41,9 @@ def calculate(session: Session):
 
 def calculate_par(loc: Neighbourhood) -> float:
     """Calculate the Person-Area Ratio for the specified location"""
-    outdoor_area = get_outdoors(loc)
-    house_area = get_indoors(loc)[0]
-    commercial_area = get_indoors(loc)[1]
+    outdoor_area = math.floor(get_outdoors(loc))
+    house_area = math.floor(get_indoors(loc)[0])
+    commercial_area = math.floor(get_indoors(loc)[1])
     par = ( OUTDOOR_PAR_PER_POINT * outdoor_area +
             INDOOR_PAR_PER_POINT * commercial_area +
             HOUSE_PAR_PER_POINT * house_area
