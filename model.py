@@ -8,7 +8,6 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
-
 class Report(Base):
     """The reports table model"""
     __tablename__ = "Reports"
@@ -97,7 +96,7 @@ class Neighbourhood(Base):
                           secondaryjoin=Id == ChildParents.ChildsId)
 class ScoreLog(Base):
     """The score log table model"""
-    __tablename__ = "ScoreLog"
+    __tablename__ = "ScoreLogs"
     Id = sqlalchemy.Column(Integer, primary_key=True, autoincrement=True)
     NeighbourhoodId = sqlalchemy.Column(Integer, ForeignKey("Neighbourhoods.Id"))
     Neighbourhood = relationship("Neighbourhood", backref="ScoreLogs")

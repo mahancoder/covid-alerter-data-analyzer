@@ -2,7 +2,6 @@
 import json
 import math
 import psycopg2
-import sqlalchemy
 from sqlalchemy.orm.session import Session
 from model import Neighbourhood
 
@@ -37,6 +36,7 @@ def calculate(session: Session):
         if location.IsBig is False:
             # Calculate the PAR and store it in the database
             location.Ratio = calculate_par(location)
+
         session.commit()
 
 def calculate_par(loc: Neighbourhood) -> float:
@@ -141,7 +141,7 @@ def get_indoors(loc: Neighbourhood) -> tuple:
     # Run the query and return the result
     cur.execute(query, (osm_id, ))
     result = cur.fetchone()
-    return result or 0
+    return result or tuple([0])
 
 def get_outdoors(loc: Neighbourhood) -> float:
     """Get the sum all outdoor places' area in a neighbourhood"""
@@ -312,10 +312,10 @@ def get_outdoors(loc: Neighbourhood) -> float:
     # Run the query and return the result
     cur.execute(query, (osm_id, ))
     result = cur.fetchone()
-    return result[0] or 0
+    return result[0] if result is not None else 0
 
 
-def check_location_childs(loc: Neighbourhood, db_session: sqlalchemy.orm.session.Session) -> bool:
+def check_location_childs(loc: Neighbourhood, db_session: Session) -> bool:
     """Returns True if the specified location has smaller administrative divisions inside"""
     osm_id = loc.OSMId
 

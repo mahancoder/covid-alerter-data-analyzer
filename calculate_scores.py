@@ -12,7 +12,7 @@ REPORT_MINUTES = 15
 CONSECUTIVE_COUNT = (THRESHOLD_MINUTES / REPORT_MINUTES) - 1
 # TODO: Add the functionailty to change consecutive count in the query based on this constant
 
-def calculate(session: Session) -> tuple:
+def calculate(session: Session) -> None:
     """Find the stays"""
     query = (
         "SELECT results.NeighbourhoodId, "
@@ -83,6 +83,7 @@ def calculate(session: Session) -> tuple:
     # (NeighbourhoodId, Score)
 
     # Create a table row for each neighbourhood
+    # TODO: Remove this in favor of a solution inside the original SQL query
     logs = [ScoreLog(NeighbourhoodId=result[0], Score=result[1],
                     Date=datetime.utcnow().date()) for result in results]
 
